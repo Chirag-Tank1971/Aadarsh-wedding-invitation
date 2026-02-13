@@ -10,6 +10,33 @@ type TimeLeft = {
   seconds: string;
 };
 
+const galleryItems = [
+  {
+    src: "/gallery/gallery-1.jpg",
+    alt: "Warm candid moment of the couple",
+    quote: "Every love story is beautiful, but ours is my favorite.",
+    author: "A & P",
+  },
+  {
+    src: "/gallery/gallery-2.jpg",
+    alt: "Hands held together with mehndi",
+    quote: "Two hearts, one soul, and a lifetime of togetherness.",
+    author: "With love",
+  },
+  {
+    src: "/gallery/gallery-3.jpg",
+    alt: "Traditional wedding details",
+    quote: "Wrapped in traditions, surrounded by love.",
+    author: "Our families",
+  },
+  {
+    src: "/gallery/gallery-4.jpg",
+    alt: "Joyful dance moment",
+    quote: "Here’s to love, laughter and happily ever after.",
+    author: "Forever",
+  },
+] as const;
+
 type LocationKey = "wedding" | "residence";
 
 // Countdown to the main wedding day (11 March 2026, Ghaziabad)
@@ -24,12 +51,33 @@ const fadeInUp = {
   },
 };
 
+const galleryItemVariants = {
+  hidden: (index: number) => ({
+    opacity: 0,
+    y: 40,
+    x: index % 2 === 0 ? -40 : 40,
+    rotate: index % 2 === 0 ? -5 : 5,
+  }),
+  visible: (index: number) => ({
+    opacity: 1,
+    y: 0,
+    x: 0,
+    rotate: 0,
+    transition: {
+      duration: 0.7,
+      ease: easeInOut,
+      delay: index * 0.06,
+    },
+  }),
+};
+
 export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
   const [isIntroClosing, setIsIntroClosing] = useState(false);
   const [activeLocation, setActiveLocation] = useState<LocationKey>("wedding");
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const [showRsvpThanks, setShowRsvpThanks] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     days: "00",
@@ -37,6 +85,22 @@ export default function HomePage() {
     minutes: "00",
     seconds: "00",
   });
+
+  const toggleMusic = () => {
+    if (!audioRef.current) return;
+
+    if (isMusicPlaying) {
+      audioRef.current.pause();
+      setIsMusicPlaying(false);
+    } else {
+      audioRef.current
+        .play()
+        .then(() => setIsMusicPlaying(true))
+        .catch(() => {
+          // ignore play errors
+        });
+    }
+  };
 
   useEffect(() => {
     // Detect mobile viewport and only show the intro animation there
@@ -198,11 +262,6 @@ export default function HomePage() {
                 Let&apos;s celebrate the start of forever together
               </div>
             </div>
-
-            <div className="hero-audio">
-              <span className="audio-dot" />
-              <span>Wedding playlist is loading</span>
-            </div>
           </motion.div>
         </div>
       </header>
@@ -330,6 +389,20 @@ export default function HomePage() {
       <section className="timeline">
         <div className="container">
           <motion.div
+            className="timeline-intro-image"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <img
+              src="/timeline-intro.jpg"
+              alt="A warm moment setting the mood for the celebrations"
+              loading="lazy"
+            />
+          </motion.div>
+
+          <motion.div
             className="section-header"
             initial="hidden"
             whileInView="visible"
@@ -338,7 +411,7 @@ export default function HomePage() {
             custom={0}
           >
             <div className="eyebrow">Wedding celebrations</div>
-            <h2>Events &amp; ceremonies</h2>
+            <h2>Event timeline</h2>
             <div className="divider" />
           </motion.div>
 
@@ -367,7 +440,7 @@ export default function HomePage() {
             <TimelineItem
               time="10 March 2026"
               title="DJ night — Glitz and glam"
-              note="Timings: 6 pm"
+              note="DJ night 7 pm onwards"
             />
             <TimelineItem
               time="11 March 2026"
@@ -377,6 +450,9 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+
+      {/* GALLERY */}
+      <GallerySection />
 
       {/* DRESS CODE & LOCATION */}
       <section>
@@ -524,17 +600,18 @@ export default function HomePage() {
             custom={1}
           >
             <p>
-              Kindly let us know if you will be able to join us so we can
-              finalize our preparations.
+              Kindly let us know how many of you will join and which celebrations
+              you&apos;ll be a part of, so we can plan the food, music and
+              memories just right.
             </p>
             <div className="rsvp-deadline">RSVP FORM</div>
 
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                alert(
-                  "Thank you for your response! (Hook this form up to your backend or a service such as Formspree).",
-                );
+                const form = e.currentTarget as HTMLFormElement;
+                form.reset();
+                setShowRsvpThanks(true);
               }}
             >
               <div>
@@ -552,6 +629,51 @@ export default function HomePage() {
                 </select>
               </div>
 
+
+              <div>
+                <label>Which events are you most likely to attend?</label>
+                <div className="checkbox-list">
+                  <label className="checkbox-pill">
+                    <input type="checkbox" name="events" value="janeu" />
+                    जनेऊ
+                  </label>
+                  <label className="checkbox-pill">
+                    <input type="checkbox" name="events" value="haldi" />
+                    Haldi
+                  </label>
+                  <label className="checkbox-pill">
+                    <input type="checkbox" name="events" value="dj-night" />
+                    DJ night
+                  </label>
+                  <label className="checkbox-pill">
+                    <input type="checkbox" name="events" value="wedding" />
+                    Wedding &amp; vows
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label>Fun question: what are you most excited about?</label>
+                <div className="checkbox-list">
+                  <label className="checkbox-pill">
+                    <input type="checkbox" name="fun" value="dance" />
+                    Dancing till the DJ stops
+                  </label>
+                  <label className="checkbox-pill">
+                    <input type="checkbox" name="fun" value="food" />
+                    Unlimited food &amp; desserts
+                  </label>
+                  <label className="checkbox-pill">
+                    <input type="checkbox" name="fun" value="photos" />
+                    Getting clicked in my best outfit
+                  </label>
+                  <label className="checkbox-pill">
+                    <input type="checkbox" name="fun" value="family" />
+                    Meeting everyone after so long
+                  </label>
+                </div>
+              </div>
+
               <div>
                 <label htmlFor="diet">
                   Do you have any food intolerances or allergies?
@@ -563,37 +685,117 @@ export default function HomePage() {
                 Submit RSVP
               </button>
               <div className="small-note">
-                This form is a simple online RSVP. For any changes, please
-                contact the families directly.
+                Prefer confirming over a call? RSVP with{" "}
+                <strong>Mr. Ashok Kumar Tripathi</strong> (97177 74567) or{" "}
+                <strong>Mrs. Veena Tripathi</strong> (+91 70489 82783).
               </div>
             </form>
           </motion.div>
         </div>
       </section>
 
+      {/* RSVP success modal */}
+      <AnimatePresence>
+        {showRsvpThanks && (
+          <motion.div
+            className="rsvp-modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: easeInOut }}
+            onClick={() => setShowRsvpThanks(false)}
+          >
+            <motion.div
+              className="rsvp-modal"
+              initial={{ opacity: 0, y: 30, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 24, scale: 0.96 }}
+              transition={{ duration: 0.3, ease: easeInOut }}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="rsvp-modal-pill">RSVP received</div>
+              <h3 className="rsvp-modal-title">Thank you for your response</h3>
+              <p className="rsvp-modal-text">
+                We&apos;re so happy you&apos;ll be a part of our celebrations.
+                Your RSVP has been noted — see you on the dance floor!
+              </p>
+              <button
+                type="button"
+                className="rsvp-modal-button"
+                onClick={() => setShowRsvpThanks(false)}
+              >
+                Close
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Music toggle (bottom-right) */}
       <button
         type="button"
         className="music-toggle"
-        onClick={() => {
-          if (!audioRef.current) return;
-          if (isMusicPlaying) {
-            audioRef.current.pause();
-            setIsMusicPlaying(false);
-          } else {
-            audioRef.current
-              .play()
-              .then(() => setIsMusicPlaying(true))
-              .catch(() => {
-                // ignore play errors
-              });
-          }
-        }}
+        onClick={toggleMusic}
+        aria-label={isMusicPlaying ? "Mute background music" : "Play background music"}
       >
-        {isMusicPlaying ? "Music: On" : "Music: Off"}
+        <span
+          className={
+            isMusicPlaying
+              ? "music-toggle-icon"
+              : "music-toggle-icon music-toggle-icon-pulse"
+          }
+          aria-hidden="true"
+        >
+          {isMusicPlaying ? (
+            <svg
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4 9v6h4l5 4V5L8 9H4z"
+                fill="currentColor"
+              />
+              <path
+                d="M16.5 8.11a4 4 0 0 1 0 7.78"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+              />
+              <path
+                d="M18.5 5.5a7 7 0 0 1 0 13"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+              />
+            </svg>
+          ) : (
+            <svg
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4 9v6h4l5 4V5L8 9H4z"
+                fill="currentColor"
+              />
+              <path
+                d="M18 9l-3 3 3 3M21 9l-3 3 3 3"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+              />
+            </svg>
+          )}
+        </span>
       </button>
 
-      <footer>With love — Aadarsh &amp; Pragya</footer>
+      <footer>
+        Hope to see you
+        <br />
+        With love — Aadarsh &amp; Pragya
+      </footer>
     </div>
   );
 }
@@ -623,6 +825,55 @@ function TimelineItem({
       <div className="timeline-title">{title}</div>
       {note && <div className="timeline-note">{note}</div>}
     </motion.div>
+  );
+}
+
+function GallerySection() {
+  return (
+    <section className="gallery">
+      <div className="container">
+        <motion.div
+          className="section-header"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={fadeInUp}
+        >
+          <div className="eyebrow">Captured moments</div>
+          <h2>Love in small frames</h2>
+          <div className="divider" />
+        </motion.div>
+
+        <motion.div className="gallery-grid">
+          {galleryItems.map((item, index) => (
+            <motion.figure
+              key={item.src}
+              className="gallery-item"
+              variants={galleryItemVariants}
+              custom={index}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.4 }}
+              whileHover={{ y: -8, scale: 1.03, rotate: -1.5 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            >
+              <div className="gallery-image-wrapper">
+                <img
+                  src={item.src}
+                  alt={item.alt}
+                  className="gallery-image"
+                  loading="lazy"
+                />
+                <div className="gallery-overlay">
+                  <p className="gallery-quote">“{item.quote}”</p>
+                  <p className="gallery-quote-author">— {item.author}</p>
+                </div>
+              </div>
+            </motion.figure>
+          ))}
+        </motion.div>
+      </div>
+    </section>
   );
 }
 
