@@ -314,7 +314,7 @@ p {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24px 20px 22px;
+  padding: 18px 20px 22px;
   text-align: center;
 }
 
@@ -323,7 +323,7 @@ p {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   color: #6b5344;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   margin-top: 0;
   order: 1;
   animation: scratchHintPulse 2.5s ease-in-out infinite;
@@ -342,7 +342,7 @@ p {
   -webkit-user-select: none;
   touch-action: none;
   -webkit-touch-callout: none;
-  margin: 0 auto 14px;
+  margin: 0 auto 10px;
   flex-shrink: 0;
 }
 
@@ -366,8 +366,8 @@ p {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px 18px;
-  transform: translateY(5%) scale(1.04);
+  padding: 14px 18px 18px;
+  transform: translateY(-4%) scale(1.04);
   transform-origin: center center;
   text-align: center;
   pointer-events: none;
@@ -382,7 +382,8 @@ p {
 .scratch-ganesh-logo {
   width: 58px;
   height: auto;
-  margin-bottom: 10px;
+  margin: 0 auto 6px;
+  display: block;
   object-fit: contain;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.08));
 }
@@ -394,7 +395,9 @@ p {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   color: #5a3020;
-  margin-bottom: 6px;
+  margin: 0 0 4px;
+  display: block;
+  text-align: center;
 }
 
 .scratch-date {
@@ -404,6 +407,8 @@ p {
   color: #3a2018;
   letter-spacing: 0.06em;
   text-align: center;
+  margin: 0;
+  display: block;
 }
 
 .scratch-place {
@@ -419,7 +424,7 @@ p {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 12px;
+  margin-top: 8px;
   margin-bottom: 0;
   position: relative;
 }
@@ -427,6 +432,7 @@ p {
   font-size: 13px;
   letter-spacing: 0.2em;
   color: #6b4423;
+  text-align: center;
 }
 
 /* Canvas scratch overlay (replaces static overlay when scratch-to-reveal is used) */
@@ -510,7 +516,7 @@ p {
 }
 
 .scratch-cta-wrap {
-  margin-top: 16px;
+  margin-top: 14px;
 }
 
 /* Hide the intro layer on larger screens */

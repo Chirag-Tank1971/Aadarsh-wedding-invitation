@@ -125,7 +125,7 @@ function ScratchIntroCard({
     }, 2000);
   };
 
-  // Draw gold + glitter base layer once
+  // Draw premium gold + glitter + whitish base layer once
   const drawBase = useRef(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -140,21 +140,53 @@ function ScratchIntroCard({
     }
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, w, h);
-    // Gold fill
-    ctx.fillStyle = "#c9a15d";
+
+    // Premium gold gradient (rich gold → lighter gold → whitish-gold highlight)
+    const goldGrad = ctx.createLinearGradient(0, 0, w, h);
+    goldGrad.addColorStop(0, "#b8860b");
+    goldGrad.addColorStop(0.35, "#d4af37");
+    goldGrad.addColorStop(0.6, "#e8d4a8");
+    goldGrad.addColorStop(0.85, "#f5ecd2");
+    goldGrad.addColorStop(1, "#fff8e7");
+    ctx.fillStyle = goldGrad;
     ctx.fillRect(0, 0, w, h);
-    // Glitter: light dots overlay
-    ctx.globalAlpha = 0.35;
+
+    // Soft radial highlight (whitish center glow)
+    const radialGrad = ctx.createRadialGradient(w * 0.5, h * 0.4, 0, w * 0.5, h * 0.5, w * 0.6);
+    radialGrad.addColorStop(0, "rgba(255, 252, 245, 0.4)");
+    radialGrad.addColorStop(0.5, "rgba(255, 248, 235, 0.15)");
+    radialGrad.addColorStop(1, "transparent");
+    ctx.fillStyle = radialGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Glitter layer 1: pearlescent white dots (denser)
+    ctx.globalAlpha = 0.5;
     ctx.fillStyle = "#fff";
-    const step = 12;
-    for (let y = 0; y < h; y += step) {
-      for (let x = 0; x < w; x += step) {
-        const jitter = (x + y) % 3;
+    const step1 = 9;
+    for (let y = 0; y < h; y += step1) {
+      for (let x = 0; x < w; x += step1) {
+        const jitter = (x + y) % 4;
+        const r = 0.6 + (jitter * 0.3);
         ctx.beginPath();
-        ctx.arc(x + (jitter - 1) * 2, y + (jitter % 2) * 2, 0.8, 0, Math.PI * 2);
+        ctx.arc(x + (jitter - 2) * 1.5, y + ((jitter % 3) - 1) * 1.5, r, 0, Math.PI * 2);
         ctx.fill();
       }
     }
+
+    // Glitter layer 2: bright white sparkles (finer, more sparkle)
+    ctx.globalAlpha = 0.55;
+    ctx.fillStyle = "#fff";
+    const step2 = 6;
+    for (let y = 0; y < h; y += step2) {
+      for (let x = 0; x < w; x += step2) {
+        if ((x + y) % 5 === 0) continue;
+        const j = (x ^ y) % 3;
+        ctx.beginPath();
+        ctx.arc(x + j - 1, y + (j % 2), 0.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
     ctx.globalAlpha = 1;
   });
 
