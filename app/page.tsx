@@ -37,6 +37,37 @@ const galleryItems = [
   },
 ] as const;
 
+const timelineEvents = [
+  {
+    time: "8 March 2026",
+    title: "जनेऊ — A sacred thread: A joyful start",
+    note: "Pooja ceremony starts at 9 am followed by lunch · Venue: At our residence, 1089, Vivekanand Nagar, Ghaziabad",
+    image: "/timeline/janeu.jpg",
+    accent: "#b8860b",
+  },
+  {
+    time: "9 March 2026",
+    title: "Haldi highs & happy vibes",
+    note: "Timings: 11 am · Venue: At our residence · Attire: Hues of yellow",
+    image: "/timeline/haldi.jpg",
+    accent: "#daa520",
+  },
+  {
+    time: "10 March 2026",
+    title: "DJ night — Glitz and glam",
+    note: "DJ night 7 pm onwards",
+    image: "/timeline/dj-night.jpg",
+    accent: "#8b4789",
+  },
+  {
+    time: "11 March 2026",
+    title: "Wedding and vows",
+    note: "Venue: Crystal Hall, The Continental by Red Carpet, Raj Nagar Extension, Ghaziabad",
+    image: "/timeline/wedding.jpg",
+    accent: "#c9a15d",
+  },
+];
+
 type LocationKey = "wedding" | "residence";
 
 // Countdown to the main wedding day (11 March 2026, Ghaziabad)
@@ -613,30 +644,20 @@ export default function HomePage() {
             variants={{
               hidden: {},
               visible: {
-                transition: { staggerChildren: 0.08 },
+                transition: { staggerChildren: 0.1 },
               },
             }}
           >
-            <TimelineItem
-              time="8 March 2026"
-              title="जनेऊ — A sacred thread: A joyful start"
-              note="Pooja ceremony starts at 9 am followed by lunch · Venue: At our residence, 1089, Vivekanand Nagar, Ghaziabad"
-            />
-            <TimelineItem
-              time="9 March 2026"
-              title="Haldi highs &amp; happy vibes"
-              note="Timings: 11 am · Venue: At our residence · Attire: Hues of yellow"
-            />
-            <TimelineItem
-              time="10 March 2026"
-              title="DJ night — Glitz and glam"
-              note="DJ night 7 pm onwards"
-            />
-            <TimelineItem
-              time="11 March 2026"
-              title="Wedding and vows"
-              note="Venue: Crystal Hall, The Continental by Red Carpet, Raj Nagar Extension, Ghaziabad"
-            />
+            {timelineEvents.map((event) => (
+              <TimelineEventCard
+                key={event.time}
+                time={event.time}
+                title={event.title}
+                note={event.note}
+                image={event.image}
+                accent={event.accent}
+              />
+            ))}
           </motion.div>
         </div>
       </section>
@@ -1028,21 +1049,48 @@ function CountdownBox({ label, value }: { label: string; value: string }) {
   );
 }
 
-function TimelineItem({
+const FALLBACK_TIMELINE_IMAGE = "/timeline-intro.jpg";
+
+function TimelineEventCard({
   time,
   title,
   note,
+  image,
+  accent,
 }: {
   time: string;
   title: string;
-  note?: string;
+  note: string;
+  image: string;
+  accent: string;
 }) {
+  const [imgSrc, setImgSrc] = useState(image);
+  const handleImageError = () => setImgSrc(FALLBACK_TIMELINE_IMAGE);
+
   return (
-    <motion.div className="timeline-item" variants={fadeInUp}>
-      <div className="timeline-dot" />
-      <div className="timeline-time">{time}</div>
-      <div className="timeline-title">{title}</div>
-      {note && <div className="timeline-note">{note}</div>}
+    <motion.div
+      className="timeline-event-card"
+      variants={fadeInUp}
+      style={{ "--timeline-accent": accent } as React.CSSProperties}
+    >
+      <div className="timeline-event-card-image-wrap">
+        <img
+          src={imgSrc}
+          alt=""
+          className="timeline-event-card-image"
+          loading="lazy"
+          onError={handleImageError}
+        />
+        <div
+          className="timeline-event-card-overlay"
+          style={{ "--timeline-accent": accent } as React.CSSProperties}
+        />
+        <div className="timeline-event-card-content">
+          <div className="timeline-event-card-date">{time}</div>
+          <h3 className="timeline-event-card-title">{title}</h3>
+          <p className="timeline-event-card-note">{note}</p>
+        </div>
+      </div>
     </motion.div>
   );
 }
