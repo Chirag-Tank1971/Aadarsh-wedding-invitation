@@ -261,6 +261,11 @@ p {
 /* Scratch intro — heart shape, Save the date + date (no image) */
 .mobile-intro-card--scratch {
   max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 20px 22px;
+  text-align: center;
 }
 
 .scratch-intro-hint {
@@ -268,7 +273,9 @@ p {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   color: var(--muted);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  margin-top: 0;
+  order: 1;
 }
 
 .scratch-container {
@@ -280,6 +287,8 @@ p {
   -webkit-user-select: none;
   touch-action: none;
   -webkit-touch-callout: none;
+  margin: 0 auto 14px;
+  flex-shrink: 0;
 }
 
 .scratch-container--heart {
@@ -298,9 +307,8 @@ p {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 28px 24px;
-  /* Nudge content slightly down to better sit inside the heart clip-path */
-  transform: translateY(8%) scale(1.08);
+  padding: 20px 18px;
+  transform: translateY(5%) scale(1.04);
   transform-origin: center center;
   text-align: center;
   pointer-events: none;
@@ -314,17 +322,17 @@ p {
 
 .scratch-save-the-date {
   font-family: "Playfair Display", serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   color: #5a3020;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .scratch-date {
   font-family: "Playfair Display", serif;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #3a2018;
   letter-spacing: 0.06em;
@@ -336,14 +344,15 @@ p {
   text-transform: uppercase;
   letter-spacing: 0.22em;
   color: #6b4423;
-  margin-top: 10px;
+  margin-top: 0;
 }
 
 .scratch-names-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 16px;
+  margin-top: 12px;
+  margin-bottom: 0;
 }
 .scratch-names-wrap .scratch-place {
   font-size: 13px;
@@ -421,27 +430,7 @@ p {
   100% { background-position: 12px 12px, -18px -18px; opacity: 0.9 }
 }
 
-/* Ensure reveal text sits on top and is clipped to heart */
-.scratch-reveal {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 28px 24px;
-  /* Nudge content slightly down to better sit inside the heart clip-path */
-  transform: translateY(8%) scale(1.08);
-  transform-origin: center center;
-  text-align: center;
-  pointer-events: none;
-  background: linear-gradient(
-    165deg,
-    rgba(255, 248, 240, 0.98) 0%,
-    rgba(252, 238, 218, 0.98) 50%,
-    rgba(248, 230, 200, 0.98) 100%
-  );
-}
+/* Reveal text clipped to heart (sizes match .scratch-reveal above) */
 
 .scratch-container .scratch-layer {
   display: none;
@@ -452,7 +441,7 @@ p {
 }
 
 .scratch-cta-wrap {
-  margin-top: 20px;
+  margin-top: 16px;
 }
 
 /* Hide the intro layer on larger screens */
@@ -1122,12 +1111,12 @@ footer {
   color: var(--muted);
 }
 
-/* Music toggle button (bottom-right, always visible) */
+/* Music toggle button (bottom-right, always visible; above mobile intro) */
 .music-toggle {
   position: fixed;
   right: 16px;
   bottom: 16px;
-  z-index: 1000;
+  z-index: 1100;
   padding: 10px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.6);

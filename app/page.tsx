@@ -60,8 +60,8 @@ const galleryItemVariants = {
   }),
 };
 
-const SCRATCH_WIDTH = 340;
-const SCRATCH_HEIGHT = 380;
+const SCRATCH_WIDTH = 260;
+const SCRATCH_HEIGHT = 280;
 const SCRATCH_THRESHOLD = 0.6; // 60% scratched = auto complete
 const SCRATCH_BRUSH_SIZE = 32;
 const THRESHOLD_CHECK_INTERVAL_MS = 280;
