@@ -136,6 +136,32 @@ p {
   backdrop-filter: blur(4px);
 }
 
+.mobile-intro-button {
+  margin-top: 6px;
+  border-radius: 999px;
+  border: 1px solid #d3b26b;
+  padding: 10px 26px;
+  background: transparent;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #5a4022;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.25s ease, color 0.25s ease;
+}
+
+.mobile-intro-button:hover {
+  background: #d3b26b;
+  color: #2d1a0a;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  transform: translateY(-1px) scale(1.02);
+}
+
+
 .mobile-intro-card {
   padding: 32px 22px 28px;
   border-radius: 26px;
@@ -230,6 +256,177 @@ p {
   color: #2d1a0a;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
   transform: translateY(-1px) scale(1.02);
+}
+
+/* Scratch intro — heart shape, Save the date + date (no image) */
+.mobile-intro-card--scratch {
+  max-width: 320px;
+}
+
+.scratch-intro-hint {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.scratch-container {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.2);
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+
+.scratch-container--heart {
+  clip-path: url(#scratch-heart-clip);
+  -webkit-clip-path: url(#scratch-heart-clip);
+}
+
+.scratch-container:active {
+  cursor: grabbing;
+}
+
+.scratch-reveal {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 24px;
+  /* Nudge content slightly down to better sit inside the heart clip-path */
+  transform: translateY(8%) scale(1.08);
+  transform-origin: center center;
+  text-align: center;
+  pointer-events: none;
+  background: linear-gradient(
+    165deg,
+    rgba(255, 248, 240, 0.98) 0%,
+    rgba(252, 238, 218, 0.98) 50%,
+    rgba(248, 230, 200, 0.98) 100%
+  );
+}
+
+.scratch-save-the-date {
+  font-family: "Playfair Display", serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #5a3020;
+  margin-bottom: 8px;
+}
+
+.scratch-date {
+  font-family: "Playfair Display", serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #3a2018;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.scratch-place {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #6b4423;
+  margin-top: 10px;
+}
+
+.scratch-names-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+}
+.scratch-names-wrap .scratch-place {
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  color: #6b4423;
+}
+
+.scratch-overlay {
+  /* keep overlay positioned but size heart via inner background element */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scratch-layer-background {
+  position: absolute;
+  inset: 0;
+  background: #c9a15d;
+  /* Use the SVG clipPath defined in the page markup so the overlay exactly matches the heart shape */
+  clip-path: url(#scratch-heart-clip);
+  -webkit-clip-path: url(#scratch-heart-clip);
+}
+
+/* Glitter layer */
+.scratch-glitter {
+  position: absolute;
+  inset: 0;
+  z-index: 11;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255,255,255,0.95) 0.5px, transparent 0.6px),
+                    radial-gradient(rgba(255,255,255,0.85) 0.6px, transparent 0.7px);
+  background-size: 12px 12px, 18px 18px;
+  opacity: 0.9;
+  mix-blend-mode: overlay;
+  clip-path: url(#scratch-heart-clip);
+  -webkit-clip-path: url(#scratch-heart-clip);
+  animation: glitterShift 2.8s linear infinite;
+}
+
+@keyframes glitterShift {
+  0% { background-position: 0 0, 0 0; opacity: 0.9 }
+  50% { background-position: 6px 6px, -9px -9px; opacity: 1 }
+  100% { background-position: 12px 12px, -18px -18px; opacity: 0.9 }
+}
+
+/* Ensure reveal text sits on top and is clipped to heart */
+.scratch-reveal {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 24px;
+  /* Nudge content slightly down to better sit inside the heart clip-path */
+  transform: translateY(8%) scale(1.08);
+  transform-origin: center center;
+  text-align: center;
+  pointer-events: none;
+  background: linear-gradient(
+    165deg,
+    rgba(255, 248, 240, 0.98) 0%,
+    rgba(252, 238, 218, 0.98) 50%,
+    rgba(248, 230, 200, 0.98) 100%
+  );
+}
+
+.scratch-container .scratch-layer {
+  display: none;
+}
+
+.scratch-container:active .scratch-layer {
+  cursor: grabbing;
+}
+
+.scratch-cta-wrap {
+  margin-top: 20px;
 }
 
 /* Hide the intro layer on larger screens */

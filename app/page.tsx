@@ -52,21 +52,105 @@ const fadeInUp = {
 };
 
 const galleryItemVariants = {
-  // Simple fade + slide-up, no left/right tilt so it can't
-  // visually interfere with other fixed elements like the mute button.
-  hidden: () => ({
-    opacity: 0,
-    y: 30,
-  }),
+  hidden: () => ({ opacity: 0, y: 30 }),
   visible: () => ({
     opacity: 1,
     y: 0,
-    transition: {
-      duration: 0.6,
-      ease: easeInOut,
-    },
+    transition: { duration: 0.6, ease: easeInOut },
   }),
 };
+
+const SCRATCH_WIDTH = 340;
+const SCRATCH_HEIGHT = 380;
+
+function ScratchIntroCard({
+  onComplete,
+  isClosing,
+}: {
+  onComplete: () => void;
+  isClosing: boolean;
+}) {
+  const [isRevealed, setIsRevealed] = useState(false);
+
+  const handleReveal = () => {
+    setIsRevealed(true);
+    // Wait 2 seconds to show the revealed content, then proceed to main page
+    setTimeout(() => {
+      onComplete();
+    }, 2000);
+  };
+
+  return (
+    <motion.div
+      className="mobile-intro-card mobile-intro-card--scratch"
+      initial={{ scale: 1.05, y: 20, opacity: 0 }}
+      animate={
+        isClosing
+          ? { scale: 1.02, y: -20, opacity: 0 }
+          : { scale: 1, y: 0, opacity: 1 }
+      }
+      transition={{ duration: 0.8, ease: easeInOut }}
+    >
+      <p className="scratch-intro-hint">Tap to reveal</p>
+      <svg width="0" height="0" aria-hidden="true">
+        <defs>
+          <clipPath id="scratch-heart-clip" clipPathUnits="objectBoundingBox">
+            <path d="M0.5 0.92 C0.25 0.65 0 0.42 0 0.26 C0 0.08 0.14 0 0.5 0.22 C0.86 0 1 0.08 1 0.26 C1 0.42 0.75 0.65 0.5 0.92 Z" />
+          </clipPath>
+        </defs>
+      </svg>
+      <div
+        className="scratch-container scratch-container--heart"
+        style={{ width: SCRATCH_WIDTH, height: SCRATCH_HEIGHT, touchAction: "none" }}
+      >
+        <div className="scratch-reveal" aria-hidden="true">
+          <span className="scratch-save-the-date">Save the date</span>
+          <span className="scratch-date">8–11 March 2026</span>
+        </div>
+        
+        {/* Animated scratch overlay layer */}
+        <motion.div
+          className="scratch-overlay"
+          initial={{ opacity: 1, scale: 1 }}
+          animate={isRevealed ? { opacity: 0, scale: 1.1 } : { opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          style={{ pointerEvents: isRevealed ? "none" : "auto" }}
+        >
+          <div className="scratch-layer-background" />
+        </motion.div>
+  {/* Glitter layer sits above the overlay and will fade with it */}
+  <div className="scratch-glitter" aria-hidden="true" style={{ pointerEvents: isRevealed ? 'none' : 'auto' }} />
+      </div>
+
+      {/* Names below the heart - appear after reveal */}
+      <motion.div
+        className="scratch-names-wrap"
+        initial={{ opacity: 0, y: 6 }}
+        animate={isRevealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 6 }}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+      >
+        <div className="scratch-place">Aadarsh &amp; Pragya</div>
+      </motion.div>
+
+      {/* Tap to Reveal Button */}
+      <motion.div
+        className="scratch-cta-wrap"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: easeInOut, delay: 0.3 }}
+      >
+        <button 
+          type="button" 
+          className="mobile-intro-button" 
+          onClick={handleReveal}
+          disabled={isRevealed}
+        >
+          {isRevealed ? "Proceeding..." : "Tap to reveal"}
+        </button>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false);
@@ -158,7 +242,7 @@ export default function HomePage() {
     <div className="page">
       {/* Background music (place your track as /public/music.mp3) */}
       <audio ref={audioRef} src="/music.mp3" loop />
-      {/* MOBILE OPENING INTRO (only on small screens) */}
+      {/* MOBILE OPENING INTRO — heart-shaped scratch, Save the date + date */}
       <AnimatePresence>
         {isMobile && showIntro && (
           <motion.div
@@ -168,68 +252,22 @@ export default function HomePage() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: easeInOut }}
           >
-            <motion.div
-              className="mobile-intro-card"
-              initial={{ scale: 1.05, y: 20, opacity: 0 }}
-              animate={
-                isIntroClosing
-                  ? { scale: 1.02, y: -20, opacity: 0 }
-                  : { scale: 1, y: 0, opacity: 1 }
-              }
-              transition={{ duration: 0.8, ease: easeInOut }}
-            >
-              <div className="mobile-intro-circle">
-                <motion.div
-                  className="mobile-intro-half mobile-intro-half-left"
-                  animate={
-                    isIntroClosing
-                      ? { x: "-100%" }
-                      : { x: 0 }
-                  }
-                  transition={{ duration: 0.7, ease: easeInOut }}
-                />
-                <motion.div
-                  className="mobile-intro-half mobile-intro-half-right"
-                  animate={
-                    isIntroClosing
-                      ? { x: "100%" }
-                      : { x: 0 }
-                  }
-                  transition={{ duration: 0.7, ease: easeInOut }}
-                />
-                <div className="mobile-intro-circle-inner">
-                  <div className="mobile-intro-subtitle">
-                    8–11 March 2026 · Ghaziabad
-                  </div>
-                  <div className="mobile-intro-names">Aadarsh &amp; Pragya</div>
-                  <div className="mobile-intro-text">
-                    invite you to join them in romance…
-                  </div>
-                </div>
-              </div>
-              <button
-                type="button"
-                className="mobile-intro-button"
-                onClick={() => {
-                  setIsIntroClosing(true);
-                  // Start background music on user interaction
-                  if (audioRef.current) {
-                    audioRef.current
-                      .play()
-                      .then(() => setIsMusicPlaying(true))
-                      .catch(() => {
-                        // ignore autoplay issues
-                      });
-                  }
-                  setTimeout(() => {
-                    setShowIntro(false);
-                    setIsIntroClosing(false);
-                  }, 750);
-                }}
-              >
-                Discover the details
-              </button>
-            </motion.div>
+            <ScratchIntroCard
+              isClosing={isIntroClosing}
+              onComplete={() => {
+                setIsIntroClosing(true);
+                if (audioRef.current) {
+                  audioRef.current
+                    .play()
+                    .then(() => setIsMusicPlaying(true))
+                    .catch(() => {});
+                }
+                setTimeout(() => {
+                  setShowIntro(false);
+                  setIsIntroClosing(false);
+                }, 750);
+              }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -604,11 +642,47 @@ export default function HomePage() {
             <div className="rsvp-deadline">RSVP FORM</div>
 
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
                 const form = e.currentTarget as HTMLFormElement;
-                form.reset();
-                setShowRsvpThanks(true);
+                
+                // Collect form data
+                const formData = new FormData(form);
+                const name = formData.get("name") as string;
+                const attending = formData.get("attending") as string;
+                const wishes = formData.get("wishes") as string;
+                
+                // Collect events checkboxes
+                const events = Array.from(formData.getAll("events")) as string[];
+                
+                // Collect fun checkboxes
+                const fun = Array.from(formData.getAll("fun")) as string[];
+
+                try {
+                  // Send to API route
+                  const response = await fetch("/api/rsvp", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      name,
+                      attending,
+                      events,
+                      fun,
+                      wishes: wishes || undefined,
+                    }),
+                  });
+
+                  if (response.ok) {
+                    // Show success modal
+                    form.reset();
+                    setShowRsvpThanks(true);
+                  } else {
+                    alert("Failed to submit RSVP. Please try again.");
+                  }
+                } catch (error) {
+                  console.error("RSVP submission error:", error);
+                  alert("Error submitting RSVP. Please try again.");
+                }
               }}
             >
               <div>
@@ -672,10 +746,10 @@ export default function HomePage() {
               </div>
 
               <div>
-                <label htmlFor="diet">
-                  Do you have any food intolerances or allergies?
+                <label htmlFor="wishes">
+                  Any special wishes or blessings for the couple?
                 </label>
-                <textarea id="diet" name="diet" placeholder="Optional" />
+                <textarea id="wishes" name="wishes" placeholder="Share your heartfelt wishes..." />
               </div>
 
               <button type="submit" className="btn-submit">
