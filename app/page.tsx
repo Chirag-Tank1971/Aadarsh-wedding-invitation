@@ -19,6 +19,18 @@ const galleryItems = [
     author: "A & P",
   },
   {
+    src: "/gallery/gallery-2.jpg",
+    alt: "Soft portrait in a garden",
+    quote: "Small moments, big memories.",
+    author: "A & P",
+  },
+  {
+    src: "/gallery/gallery-3.jpg",
+    alt: "Laughing together on a walk",
+    quote: "Together is a wonderful place to be.",
+    author: "Friends & Family",
+  },
+  {
     src: "/gallery/gallery-4.jpg",
     alt: "Joyful dance moment",
     quote: "Here’s to love, laughter and happily ever after.",
